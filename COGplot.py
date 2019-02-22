@@ -100,6 +100,14 @@ def run_diamond():
     os.remove("tmp.fasta")
     return header
 
+def run_debug():
+    header={}
+    with open('test_CCU063.tsv','r') as bxf:
+        for line in bxf:
+            headerlist = line.split('\t')
+            header[headerlist[0]] = headerlist[1].split('_')[0]  
+    return header
+
 def extract_group(DB_annotate_file):
     dbtag2group_dict={}
     with open(DB_annotate_file, 'r') as dbf:
@@ -198,7 +206,7 @@ def draw_gc(sumgene,dwg,gc_color):
     gcc_mean = GC(sumgene.seq)
     gc_contents = []
     gc_skews = []
-	#compute gc
+    #compute gc
     while(unit_num > 0):
         
         gc_content = GC(sumgene.seq[start_unit : end_unit])
@@ -295,6 +303,9 @@ def main():
     if args.blastx:
         header = run_blastx()
         print("blastx done")
+    elif args.debug:
+        header = run_debug()
+        print("debug mode: open tsv done")
     else:
         header = run_diamond()
         print("diamond done")
@@ -328,6 +339,7 @@ if __name__ == '__main__':
     p.add_argument('-ff','--feature_file', help="db annotation file",
                    default='/bip5_disk/fangren106/Biopy/diamond_COGdb/bactNOG.annotations.tsv')
     p.add_argument('--blastx', help="use blasx run aliment(diamond)", action='store_true')
+    p.add_argument('-g','--debug', help="open test tsv file instead alignment(for debug)", action='store_true')
     p.add_argument('--gg_c', help="gene group color range(give (start,end) color)", nargs=2, default=['#800000','blue'])
     p.add_argument('--gccp_c', help="gc content positive triangle color(limegreen)", default='limegreen')
     p.add_argument('--gccn_c', help="gc content negative triangle color(mediumpurple)", default='mediumpurple')
