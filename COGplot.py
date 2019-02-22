@@ -35,10 +35,16 @@ class Gene:
         return "{0} {1} {2} {3} {4} {5} {6}".format(
             self.type,self.name,self.locus_tag,self.position[0],self.position[1],self.strand,self.genlen)
        
-def parse_gb2class(gbfile,genedict,sumgene):
+def parse_gb2class(gbfile,genedict,sumgene,part_contigs):
     with open("tmp.fasta","w+") as f:
         contigcount=0
         for record in SeqIO.parse(gbfile, "genbank"):
+            if part_contigs == None:
+                pass
+            else:
+                if record.id not in part_contigs:
+                    print("contig " + record.id + "  run fail")
+                    continue
             sumgene.name = record.description
             sumgene.len += len(record)
             sumgene.featurelen += len(record.features)
@@ -67,6 +73,7 @@ def parse_gb2class(gbfile,genedict,sumgene):
                     print(gene.seq, file=f)
                     genedict[gene.locus_tag] = gene
             contigcount += len(record)
+            print("contig " + record.id + "  run success")
 
 def run_blastx():
     db_name = "/bip5_disk/jiamin_105/COG/egg/NOGDB/COG"
@@ -150,11 +157,13 @@ def position_mapping(sumgene,genepos,radius):
 
 def draw_number_mark(sumgene,outer_r,dwg):
     mark_count = 0
+    tmpd = str(int(sumgene.len/5))
+    legend_interval = int(tmpd[0])*pow(10,int(len(tmpd))-1)
     while mark_count <= sumgene.len:
-        mark_pos = position_mapping(sumgene,[mark_count,mark_count+5000],outer_r+5)
+        mark_pos = position_mapping(sumgene,[mark_count,mark_count+2000],outer_r+5)
         dwg.add(dwg.line((1500+mark_pos[0],1500-mark_pos[1]),(1500+mark_pos[2],1500-mark_pos[3]),
-                         stroke='black',stroke_width=10))
-        m_legend_pos = position_mapping(sumgene,[mark_count+2500,0],outer_r+20)
+                         stroke='black',stroke_width=5))
+        m_legend_pos = position_mapping(sumgene,[mark_count+1000,0],outer_r+20)
         # adjust number mark text position
         if sumgene.len*9/16 < mark_count < sumgene.len*15/16:
             dwg.add(dwg.text(str(mark_count),insert=(1500+m_legend_pos[0],1500-m_legend_pos[1]),
@@ -165,7 +174,7 @@ def draw_number_mark(sumgene,outer_r,dwg):
         else:
             dwg.add(dwg.text(str(mark_count),insert=(1500+m_legend_pos[0],1500-m_legend_pos[1]),
                          stroke_width=10,style="text-anchor: middle;"))
-        mark_count += 500000
+        mark_count += legend_interval
     return dwg
 
 def draw_cds_rna(sumgene,genedict,sort_g2c,dwg):
@@ -208,7 +217,6 @@ def draw_gc(sumgene,dwg,gc_color):
     gc_skews = []
     #compute gc
     while(unit_num > 0):
-        
         gc_content = GC(sumgene.seq[start_unit : end_unit])
         gcc_variance = gc_content-gcc_mean
         gc_contents.append(gcc_variance)
@@ -290,14 +298,17 @@ def main():
     svg_file_name = args.output
     gene_group_color = (args.gg_c[0], args.gg_c[1])
     gc_color = (args.gccp_c, args.gccn_c, args.gcsp_c, args.gcsn_c) 
+    part_contigs = args.part
     
     print("\n")
     print("Data Extract")
     print('open genbank: "' + gbfile + '"')
     genedict={}
     sumgene = SumGene()
-    parse_gb2class(gbfile,genedict,sumgene)
+    parse_gb2class(gbfile,genedict,sumgene,part_contigs)
     print("read genbank done")
+    
+    print("Total length: ", sumgene.len)
     
     # aliment
     if args.blastx:
@@ -339,7 +350,8 @@ if __name__ == '__main__':
     p.add_argument('-ff','--feature_file', help="db annotation file",
                    default='/bip5_disk/fangren106/Biopy/diamond_COGdb/bactNOG.annotations.tsv')
     p.add_argument('--blastx', help="use blasx run aliment(diamond)", action='store_true')
-    p.add_argument('-g','--debug', help="open test tsv file instead alignment(for debug)", action='store_true')
+    p.add_argument('-d','--debug', help="open test tsv file instead alignment(for debug)", action='store_true')
+    p.add_argument('-p','--part', help="draw plot with partial contigs, please input contig name list(all)", nargs='+', default=None)
     p.add_argument('--gg_c', help="gene group color range(give (start,end) color)", nargs=2, default=['#800000','blue'])
     p.add_argument('--gccp_c', help="gc content positive triangle color(limegreen)", default='limegreen')
     p.add_argument('--gccn_c', help="gc content negative triangle color(mediumpurple)", default='mediumpurple')
