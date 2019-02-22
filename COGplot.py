@@ -192,11 +192,11 @@ def draw_cds_rna(sumgene,genedict,sort_g2c,dwg):
                             stroke=str(sort_g2c[gene.group]).lower(), stroke_width=50, fill="none"))
         if gene.type == 'tRNA':
             map_t = position_mapping(sumgene, gene.position, 620)
-            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_t[0],1500-map_t[1],1500+map_t[2],1500-map_t[3],760,760),
+            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_t[0],1500-map_t[1],1500+map_t[2],1500-map_t[3],620,620),
                             stroke='blue', stroke_width=50, fill="none"))
         if gene.type == 'rRNA':
             map_r = position_mapping(sumgene, gene.position, 550)
-            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_r[0],1500-map_r[1],1500+map_r[2],1500-map_r[3],760,760),
+            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_r[0],1500-map_r[1],1500+map_r[2],1500-map_r[3],550,550),
                             stroke='blue', stroke_width=50, fill="none"))
     return dwg
 
