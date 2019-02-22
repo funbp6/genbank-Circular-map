@@ -184,26 +184,18 @@ def draw_cds_rna(sumgene,genedict,sort_g2c,dwg):
             if gene.type == 'CDS':
                 if gene.strand == 1: # positive strand
                     map_p = position_mapping(sumgene, gene.position, 760)
-                    # dwg.add(dwg.line((1500+map_p[0],1500-map_p[1]),(1500+map_p[2],1500-map_p[3]),
-                                     # stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
                     dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_p[0],1500-map_p[1],1500+map_p[2],1500-map_p[3],760,760),
                             stroke=str(sort_g2c[gene.group]).lower(), stroke_width=50, fill="none"))
                 if gene.strand == -1: # negative strand
                     map_n = position_mapping(sumgene, gene.position, 690)
-                    # dwg.add(dwg.line((1500+map_n[0],1500-map_n[1]),(1500+map_n[2],1500-map_n[3]),
-                                     # stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
                     dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_n[0],1500-map_n[1],1500+map_n[2],1500-map_n[3],690,690),
                             stroke=str(sort_g2c[gene.group]).lower(), stroke_width=50, fill="none"))
         if gene.type == 'tRNA':
             map_t = position_mapping(sumgene, gene.position, 620)
-            # dwg.add(dwg.line((1500+map_t[0],1500-map_t[1]),(1500+map_t[2],1500-map_t[3]),
-                             # stroke='blue',stroke_width=50))
             dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_t[0],1500-map_t[1],1500+map_t[2],1500-map_t[3],760,760),
                             stroke='blue', stroke_width=50, fill="none"))
         if gene.type == 'rRNA':
             map_r = position_mapping(sumgene, gene.position, 550)
-            # dwg.add(dwg.line((1500+map_r[0],1500-map_r[1]),(1500+map_r[2],1500-map_r[3]),
-                             # stroke='blue',stroke_width=50))
             dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_r[0],1500-map_r[1],1500+map_r[2],1500-map_r[3],760,760),
                             stroke='blue', stroke_width=50, fill="none"))
     return dwg
