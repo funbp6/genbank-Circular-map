@@ -95,7 +95,7 @@ def run_blastx():
     return header    
     
 def run_diamond():
-    db_name = "/bip5_disk/fangren106/Biopy/diamond_COGdb/COG"
+    db_name = "diamond_COGdb/COG"
     gene_fna = "tmp.fasta"
     header={}
     with Popen(['diamond','blastx','-f','6','-d',db_name,'-q',gene_fna,'-k','1'],
