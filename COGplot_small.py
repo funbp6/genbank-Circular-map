@@ -43,7 +43,7 @@ def parse_gb2class(gbfile,genedict,sumgene,part_contigs):
                 pass
             else:
                 if record.id not in part_contigs:
-                    print("contig " + record.id + "  run pass")
+                    print("contig " + record.id + "  run fail")
                     continue
             sumgene.name = record.description
             sumgene.len += len(record)
@@ -159,12 +159,11 @@ def draw_number_mark(sumgene,outer_r,dwg):
     mark_count = 0
     tmpd = str(int(sumgene.len/5))
     legend_interval = int(tmpd[0])*pow(10,int(len(tmpd))-1)
-    mark_len = int(sumgene.len/1000)
     while mark_count <= sumgene.len:
-        mark_pos = position_mapping(sumgene,[mark_count,mark_count+mark_len],outer_r+5)
+        mark_pos = position_mapping(sumgene,[mark_count,mark_count+2000],outer_r+5)
         dwg.add(dwg.line((1500+mark_pos[0],1500-mark_pos[1]),(1500+mark_pos[2],1500-mark_pos[3]),
                          stroke='black',stroke_width=5))
-        m_legend_pos = position_mapping(sumgene,[mark_count+mark_len/2,0],outer_r+20)
+        m_legend_pos = position_mapping(sumgene,[mark_count+1000,0],outer_r+20)
         # adjust number mark text position
         if sumgene.len*9/16 < mark_count < sumgene.len*15/16:
             dwg.add(dwg.text(str(mark_count),insert=(1500+m_legend_pos[0],1500-m_legend_pos[1]),
@@ -184,28 +183,20 @@ def draw_cds_rna(sumgene,genedict,sort_g2c,dwg):
             if gene.type == 'CDS':
                 if gene.strand == 1: # positive strand
                     map_p = position_mapping(sumgene, gene.position, 760)
-                    # dwg.add(dwg.line((1500+map_p[0],1500-map_p[1]),(1500+map_p[2],1500-map_p[3]),
-                                     # stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
-                    dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_p[0],1500-map_p[1],1500+map_p[2],1500-map_p[3],760,760),
-                            stroke=str(sort_g2c[gene.group]).lower(), stroke_width=50, fill="none"))
+                    dwg.add(dwg.line((1500+map_p[0],1500-map_p[1]),(1500+map_p[2],1500-map_p[3]),
+                                     stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
                 if gene.strand == -1: # negative strand
                     map_n = position_mapping(sumgene, gene.position, 690)
-                    # dwg.add(dwg.line((1500+map_n[0],1500-map_n[1]),(1500+map_n[2],1500-map_n[3]),
-                                     # stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
-                    dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_n[0],1500-map_n[1],1500+map_n[2],1500-map_n[3],690,690),
-                            stroke=str(sort_g2c[gene.group]).lower(), stroke_width=50, fill="none"))
+                    dwg.add(dwg.line((1500+map_n[0],1500-map_n[1]),(1500+map_n[2],1500-map_n[3]),
+                                     stroke=str(sort_g2c[gene.group]).lower(),stroke_width=50))
         if gene.type == 'tRNA':
             map_t = position_mapping(sumgene, gene.position, 620)
-            # dwg.add(dwg.line((1500+map_t[0],1500-map_t[1]),(1500+map_t[2],1500-map_t[3]),
-                             # stroke='blue',stroke_width=50))
-            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_t[0],1500-map_t[1],1500+map_t[2],1500-map_t[3],760,760),
-                            stroke='blue', stroke_width=50, fill="none"))
+            dwg.add(dwg.line((1500+map_t[0],1500-map_t[1]),(1500+map_t[2],1500-map_t[3]),
+                             stroke='blue',stroke_width=50))
         if gene.type == 'rRNA':
             map_r = position_mapping(sumgene, gene.position, 550)
-            # dwg.add(dwg.line((1500+map_r[0],1500-map_r[1]),(1500+map_r[2],1500-map_r[3]),
-                             # stroke='blue',stroke_width=50))
-            dwg.add(dwg.path(d="M{0},{1} A{4},{5} 0 0,1 {2},{3}".format(1500+map_r[0],1500-map_r[1],1500+map_r[2],1500-map_r[3],760,760),
-                            stroke='blue', stroke_width=50, fill="none"))
+            dwg.add(dwg.line((1500+map_r[0],1500-map_r[1]),(1500+map_r[2],1500-map_r[3]),
+                             stroke='blue',stroke_width=50))
     return dwg
 
 def draw_gc(sumgene,dwg,gc_color):
