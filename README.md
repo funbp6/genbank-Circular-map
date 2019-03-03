@@ -1,5 +1,5 @@
 # Circular map
-draw circular map plot from genbank file  
+circular map plot generator, with genbank file input  
 ## Usage  
 This plotting program can run with default setting  
 input your genbank file, and svg circular map will be generated.   
