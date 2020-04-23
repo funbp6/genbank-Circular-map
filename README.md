@@ -17,5 +17,9 @@ other detail setting please check by `./COGplot.py -h` command
 * colour  
 * svgwrite  
 * argparse  
+## Example
+
+![image](https://github.com/funbp6/genbank-Circular-map/blob/master/circular_map1.png)
+
 
 
